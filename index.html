@@ -1,0 +1,1283 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Espacio de Repaso - FICDE</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --ficde-azul-dark: #134252;
+            --ficde-azul-light: #2c5c6e;
+            --ficde-naranja: #e68161;
+            --ficde-naranja-hover: #ff9f85;
+            --tarjeta-bg: #f0f4f5;
+            --input-bg: #e2e8eb;
+            --texto-principal: #0f2d38;
+            --texto-secundario: #4a636e;
+            --verde-exito: #2e7d32;
+            --verde-bg: #c8e6c9;
+            --rojo-error: #c62828;
+            --naranja-bg: #ffe0b2;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, var(--ficde-azul-dark) 0%, #0a252e 100%);
+            min-height: 100vh;
+            color: var(--texto-principal);
+            padding: 20px;
+            background-attachment: fixed;
+        }
+
+        .container { max-width: 1200px; margin: 0 auto; }
+
+        header {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 15px 30px;
+            border-radius: 16px;
+            margin-bottom: 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .logo-img { height: 50px; width: auto; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3)); }
+
+        .module-tag {
+            background: var(--ficde-naranja);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 30px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        .welcome-card {
+            background: var(--tarjeta-bg);
+            border-radius: 20px;
+            padding: 40px;
+            text-align: center;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+            border-bottom: 6px solid var(--ficde-naranja);
+            margin-bottom: 30px;
+        }
+
+        .welcome-title {
+            color: var(--ficde-azul-dark);
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+            font-weight: 800;
+        }
+
+        .fede-avatar-large {
+            width: 140px; height: 140px;
+            margin: 0 auto 20px;
+            border-radius: 50%;
+            background: var(--ficde-naranja);
+            padding: 5px;
+            box-shadow: 0 10px 25px rgba(230, 129, 97, 0.5);
+            cursor: pointer;
+            transition: transform 0.3s;
+            overflow: hidden;
+        }
+
+        .fede-avatar-large:hover { transform: scale(1.1); }
+
+        .fede-avatar-large img {
+            width: 100%; height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+            border: 4px solid white;
+        }
+
+        .blocks-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 20px;
+        }
+
+        .block-card {
+            background: var(--tarjeta-bg);
+            padding: 30px;
+            border-radius: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            border: 2px solid transparent;
+        }
+
+        .block-card:hover {
+            transform: translateY(-8px);
+            border-color: var(--ficde-naranja);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        .block-icon {
+            font-size: 3rem; margin-bottom: 15px;
+            background: rgba(19, 66, 82, 0.1);
+            width: 70px; height: 70px;
+            display: flex; align-items: center; justify-content: center;
+            border-radius: 50%; color: var(--ficde-azul-dark);
+        }
+
+        .block-title { color: var(--ficde-azul-dark); font-size: 1.3rem; font-weight: 700; margin-bottom: 10px; }
+
+        .block-desc { color: var(--texto-secundario); font-size: 0.9rem; line-height: 1.5; }
+
+        .activity-screen {
+            display: none;
+            grid-template-columns: 280px 1fr;
+            gap: 25px;
+            align-items: start;
+        }
+
+        .activity-screen.active { display: grid; }
+
+        .tutor-sidebar {
+            background: var(--ficde-azul-light);
+            padding: 30px;
+            border-radius: 16px;
+            text-align: center;
+            color: white;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+            position: sticky; top: 20px;
+        }
+
+        .tutor-bubble {
+            background: rgba(255,255,255,0.95);
+            padding: 20px;
+            border-radius: 12px;
+            font-size: 0.95rem;
+            color: var(--ficde-azul-dark);
+            margin-top: 20px;
+            position: relative;
+            text-align: left;
+        }
+
+        .tutor-bubble::after {
+            content: '';
+            position: absolute;
+            top: -10px;
+            left: 50%;
+            border-width: 0 10px 10px;
+            border-style: solid;
+            border-color: transparent transparent rgba(255,255,255,0.95);
+            transform: translateX(-50%);
+        }
+
+        .activity-content {
+            background: var(--tarjeta-bg);
+            padding: 40px;
+            border-radius: 16px;
+            min-height: 500px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .act-badge {
+            background: var(--ficde-naranja);
+            color: white;
+            padding: 5px 15px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .act-title { font-size: 1.8rem; color: var(--ficde-azul-dark); margin: 15px 0; font-weight: 800; }
+
+        .act-instruction { font-size: 1.1rem; color: var(--texto-secundario); margin-bottom: 30px; }
+
+        .student-input {
+            width: 100%;
+            height: 150px;
+            padding: 20px;
+            background: var(--input-bg);
+            border: 2px solid transparent;
+            border-radius: 12px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 1rem;
+            color: var(--ficde-azul-dark);
+            transition: all 0.3s;
+        }
+
+        .student-input:focus { background: white; border-color: var(--ficde-naranja); outline: none; }
+
+        .fill-input {
+            border: none;
+            border-bottom: 2px solid var(--ficde-naranja);
+            background: transparent;
+            font-weight: 700;
+            color: var(--ficde-azul-dark);
+            text-align: center;
+            width: 150px;
+            font-size: 1.1rem;
+        }
+
+        .btn-action {
+            width: 100%;
+            padding: 18px;
+            margin-top: 30px;
+            border: none;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            cursor: pointer;
+            background: linear-gradient(90deg, var(--ficde-naranja), #ff9f85);
+            color: white;
+            box-shadow: 0 6px 20px rgba(230, 129, 97, 0.4);
+            transition: transform 0.2s;
+        }
+
+        .btn-action:hover { transform: translateY(-3px); }
+
+        .btn-back {
+            background: transparent;
+            color: var(--texto-secundario);
+            box-shadow: none;
+            border: 2px solid #ccc;
+            margin-top: 15px;
+        }
+
+        .btn-back:hover { background: #e0e0e0; color: var(--ficde-azul-dark); }
+
+        .traffic-row, .checklist-item {
+            background: white;
+            margin-bottom: 12px;
+            padding: 15px 20px;
+            border-radius: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            border: 1px solid transparent;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .traffic-row:hover, .checklist-item:hover { border-color: var(--ficde-naranja); transform: translateX(5px); }
+
+        .traffic-btn {
+            width: 35px; height: 35px;
+            border-radius: 50%; border: 2px solid #ddd;
+            cursor: pointer;
+            opacity: 0.3;
+        }
+
+        .traffic-btn.active { opacity: 1; transform: scale(1.2); border-color: var(--ficde-azul-dark); }
+
+        .bg-green { background: #4CAF50; }
+
+        .bg-yellow { background: #FFC107; }
+
+        .bg-red { background: #f44336; }
+
+        .check-box {
+            width: 24px; height: 24px;
+            border: 2px solid #ccc;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+        }
+
+        .checklist-item.selected { border-color: var(--ficde-naranja); background: #fff5f0; }
+
+        .checklist-item.selected .check-box { background: var(--ficde-naranja); border-color: var(--ficde-naranja); color: white; }
+
+        .feedback-area {
+            margin-top: 30px;
+            padding: 25px;
+            border-radius: 12px;
+            display: none;
+            animation: slideUp 0.4s;
+        }
+
+        .feedback-success { background: var(--verde-bg); color: #1b5e20; border-left: 6px solid var(--verde-exito); }
+
+        .feedback-retry { background: var(--naranja-bg); color: #bf360c; border-left: 6px solid #ef6c00; }
+
+        .feedback-fail { background: #cfd8dc; color: #37474f; border-left: 6px solid #455a64; }
+
+        #musicToggle {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--ficde-naranja);
+            color: white;
+            border: none;
+            cursor: pointer;
+            z-index: 100;
+            font-size: 1.5rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 768px) {
+            .activity-screen { grid-template-columns: 1fr; }
+            .tutor-sidebar { display: flex; align-items: center; gap: 20px; }
+            .fede-avatar-large { width: 80px; height: 80px; }
+            .tutor-bubble::after { display: none; }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- AUDIOS MP3 - Todos en la misma carpeta -->
+    <audio id="bgMusic" loop preload="auto">
+        <source src="chill-study-desk-focus-concentration-lofi-451180.mp3" type="audio/mpeg">
+    </audio>
+
+    <audio id="saludoInicial" preload="auto" src="saludoinicial.mp3"></audio>
+    <audio id="mensaje1Ejercicios" preload="auto" src="mensaje1ejercicios.mp3"></audio>
+    <audio id="mensaje2Ejercicios" preload="auto" src="mensaje2ejercicios.mp3"></audio>
+    <audio id="mensaje3Ejercicios" preload="auto" src="mensaje3ejercicios.mp3"></audio>
+    <audio id="mensaje4Ejercicios" preload="auto" src="mensaje4ejercicios.mp3"></audio>
+    <audio id="respuestaCorrecta" preload="auto" src="respuestacorrecta.mp3"></audio>
+    <audio id="primerError" preload="auto" src="primererror.mp3"></audio>
+    <audio id="segundoError" preload="auto" src="segundoerror.mp3"></audio>
+    <audio id="loLograste" preload="auto" src="lolograste.mp3"></audio>
+
+    <audio id="hoverSound" preload="auto" src="https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.m4a"></audio>
+    <audio id="clickSound" preload="auto" src="https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.m4a"></audio>
+    <audio id="successSound" preload="auto" src="https://assets.mixkit.co/active_storage/sfx/1435/1435-preview.m4a"></audio>
+
+    <button id="musicToggle" onclick="toggleMusic()">🔇</button>
+
+    <div class="container">
+        <header>
+            <div class="logo-container">
+                <img src="logo.png" alt="FICDE" class="logo-img" onerror="this.style.display='none'; document.getElementById('altLogo').style.display='block'">
+                <h2 id="altLogo" style="display:none; color:white; font-weight:800;">FICDE</h2>
+            </div>
+            <div class="module-tag">Modulo Pedicuría estética profesional</header>
+        <div id="selectionScreen">
+            <div class="welcome-card">
+                <div class="fede-avatar-large" onclick="playAudio('saludoInicial')">
+                    <img src="personaje.gif" alt="Fede">
+                </div>
+                <h1 class="welcome-title">Espacio de Repaso Interactivo</h1>
+                <p style="color: var(--texto-secundario); font-size: 1.1rem;">Donde el conocimiento se convierte en acción</p>
+            </div>
+
+            <div class="blocks-grid">
+                <div class="block-card" onclick="startModule('sintesis')">
+                    <div class="block-icon">🧠</div>
+                    <div class="block-title">Síntesis</div>
+                    <div class="block-desc">Fundamentos de podoestetica y bioseguridad, evaluación y preparación profesional, manejo seguro del instrumental, anatomía de la uña y técnicas de corte, limado, pulido y cuidado estético de las cutículas.</div>
+                </div>
+
+                <div class="block-card" onclick="startModule('analisis')">
+                    <div class="block-icon">🔍</div>
+                    <div class="block-title">Análisis Crítico</div>
+                    <div class="block-desc">Errores y riesgos frecuentes en podoestética relacionados con evaluación previa, bioseguridad y esterilización, ergonomía, técnicas inadecuadas sobre uñas y piel, uso incorrecto de productos y falta de derivación profesional.</div>
+                </div>
+
+                <div class="block-card" onclick="startModule('escenarios')">
+                    <div class="block-icon">🎬</div>
+                    <div class="block-title">Escenarios</div>
+                    <div class="block-desc">Abordaje seguro y adaptado de distintas condiciones estéticas del pie y las uñas, incluyendo cuidados específicos, prevención de complicaciones, actuación ante incidentes y criterios de derivación profesional. </div>
+                </div>
+
+                <div class="block-card" onclick="startModule('practica')">
+                    <div class="block-icon">⚡</div>
+                    <div class="block-title">Práctica</div>
+                    <div class="block-desc">Secuencia práctica de una sesión de podoestética, desde la higiene y evaluación inicial hasta las técnicas de corte, limado, pulido, cuidado de cutículas, exfoliación, hidratación, esmaltado y recomendaciones finales.</div>
+                </div>
+            </div>
+        </div>
+
+        <div id="activityScreen" class="activity-screen">
+            <div class="tutor-sidebar">
+                <div class="fede-avatar-large" style="width: 100px; height: 100px; border-color: var(--ficde-naranja);" onclick="replayTutorMessage()">
+                    <img src="personaje.gif" alt="Fede">
+                </div>
+                <div style="flex:1;">
+                    <h3 style="color:var(--ficde-naranja); margin-bottom:5px;">Tutor Fede</h3>
+                    <div class="tutor-bubble" id="tutorMessage"></div>
+                </div>
+            </div>
+
+            <div class="activity-content" id="activityContainer"></div>
+        </div>
+    </div>
+
+    <script>
+        // ===== GESTIÓN DE AUDIO MP3 =====
+        const audioFiles = {
+            saludoInicial: document.getElementById('saludoInicial'),
+            mensaje1: document.getElementById('mensaje1Ejercicios'),
+            mensaje2: document.getElementById('mensaje2Ejercicios'),
+            mensaje3: document.getElementById('mensaje3Ejercicios'),
+            mensaje4: document.getElementById('mensaje4Ejercicios'),
+            correcto: document.getElementById('respuestaCorrecta'),
+            error1: document.getElementById('primerError'),
+            error2: document.getElementById('segundoError'),
+            lolograste: document.getElementById('loLograste')
+        };
+
+        function playAudio(audioKey) {
+            if (audioFiles[audioKey]) {
+                audioFiles[audioKey].currentTime = 0;
+                audioFiles[audioKey].play().catch(err => console.log('Error al reproducir audio:', err));
+            }
+        }
+
+        const bgMusic = document.getElementById('bgMusic');
+        const clickSoundEl = document.getElementById('clickSound');
+        const successSoundEl = document.getElementById('successSound');
+        const hoverSoundEl = document.getElementById('hoverSound');
+
+        let musicOn = false;
+        let audioUnlocked = false;
+
+        function unlockAudio() {
+            if (audioUnlocked) return;
+            [clickSoundEl, successSoundEl, hoverSoundEl].forEach(a => {
+                a.volume = 0;
+                const p = a.play();
+                if (p) p.then(() => { a.pause(); a.currentTime = 0; a.volume = 1; }).catch(()=>{});
+            });
+            audioUnlocked = true;
+        }
+
+        document.addEventListener('pointerdown', unlockAudio, { once: true });
+        document.addEventListener('keydown', unlockAudio, { once: true });
+
+        function toggleMusic() {
+            unlockAudio();
+            if (!musicOn) {
+                bgMusic.volume = 0.1;
+                bgMusic.play().catch(() => {});
+                document.getElementById('musicToggle').innerText = '🎵';
+            } else {
+                bgMusic.pause();
+                document.getElementById('musicToggle').innerText = '🔇';
+            }
+            musicOn = !musicOn;
+        }
+
+        function playSound(type) {
+            if (!audioUnlocked) return;
+            try {
+                if (type === 'click') { clickSoundEl.currentTime=0; clickSoundEl.volume=0.8; clickSoundEl.play().catch(()=>{}); }
+                if (type === 'success') { successSoundEl.currentTime=0; successSoundEl.volume=0.8; successSoundEl.play().catch(()=>{}); }
+                if (type === 'hover') { hoverSoundEl.currentTime=0; hoverSoundEl.volume=0.2; hoverSoundEl.play().catch(()=>{}); }
+            } catch (e) {}
+        }
+
+        function wireUiSounds() {
+            document.querySelectorAll('.block-card, .btn-action, .checklist-item, .traffic-row, .fede-avatar-large').forEach(el => {
+                if (el.dataset.sound === '1') return;
+                el.dataset.sound = '1';
+                el.addEventListener('mouseenter', () => playSound('hover'));
+                el.addEventListener('click', () => playSound('click'));
+            });
+        }
+
+        window.addEventListener('load', wireUiSounds);
+
+        // ===== NORMALIZACIÓN DE TEXTO =====
+        function normalizar(txt) {
+            return txt
+                .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+                .toLowerCase();
+        }
+
+        // ===== ACTIVIDADES: validaciones de texto simplificadas ===
+const modules = {
+
+    // ===================== SÍNTESIS =====================
+    sintesis: [
+        {
+            type: 'text',
+            badge: 'Generalidades podoesteticas',
+            title: 'Concepto de podoestetica',
+            instruction: 'Define el concepto de podoestetica profesional detallando su objetivo',
+            validation: (raw) => {
+                const v = normalizar(raw);
+                let c = 0;
+                if (v.includes('podoestetica') || v.includes('higiene')) c++;
+                if (v.includes('bienestar') || v.includes('podal')) c++;
+                return c >= 2;
+            },
+            tutor: 'Considera el conjunto de cuidados técnicos destinados a mantener y mejorar la salud estética del pie.',
+            explanation: 'La podoestetica combina higiene, técnica y bienestar para garantizar la prevención en el cuidado podal.'
+        },
+        {
+            type: 'text',
+            badge: 'Evaluación del cliente',
+            title: 'Ficha profesional e historia',
+            instruction: 'Porque es importante recopilar datos  durante la evaluación inicial',
+            validation: (raw) => {
+                const v = normalizar(raw);
+                let c = 0;
+                if (v.includes('anamnesis')) c++;
+                if (v.includes('antecedentes') || v.includes('registro')) c++;
+                if (v.includes('seguro')) c++;
+                return c >= 2;
+            },
+            tutor: 'Repasa la importancia de registrar motivo de consulta, alergias conocidas y tratamientos previos.',
+            explanation: 'Realizar la anamnesis previa recopila antecedentes de salud para mantener un registro seguro.'
+        },
+        {
+            type: 'checklist',
+            badge: 'Procesamiento de materiales',
+            title: 'Niveles de bioseguridad',
+            instruction: 'Selecciona los tres niveles diferenciados de procesamiento del instrumental reutilizable en el servicio.',
+            items: [
+                { text: 'Limpieza para eliminar materia orgánica', correct: true },
+                { text: 'Desinfección física o química de microorganismos', correct: true },
+                { text: 'Lavado superficial con agua corriente sin detergente.', correct: false },
+                { text: 'Esterilización para eliminar toda vida microbiana y esporas.', correct: true }
+            ],
+            tutor: 'Identifica la distinción entre eliminar suciedad, reducir carga microbiana y destruir esporas.',
+            explanation: 'La limpieza retira suciedad, la desinfección reduce microbios y la esterilización destruye esporas.'
+        },
+        {
+            type: 'text',
+            badge: 'Salud ocupacional',
+            title: 'Principios de ergonomía',
+            instruction: 'Porque es importante mantener una buena postura',
+            validation: (raw) => {
+                const v = normalizar(raw);
+                let c = 0;
+                if (v.includes('postura') || v.includes('estable')) c++;
+                if (v.includes('visi') || v.includes('fatiga') || v.includes('muscular')) c++;
+                return c >= 2;
+            },
+            tutor: 'Observa la altura adecuada del mobiliario, alineación de espalda y ubicación de herramientas al alcance.',
+            explanation: 'Mantener una postura estable favorece la visión del área y previene la fatiga muscular.'
+        },
+        {
+    type: 'blanks',
+    badge: 'Herramientas de trabajo',
+    title: 'Control del alicate',
+    instruction: 
+        'Completá las frases.<br><br>' +
+        '1. El alicate para uñas requiere verificar que los ___ estén afilados, el resorte funcione bien y la pieza esté ___.<br>',
+    blanks: ['filos', 'esterilizada'],
+    tutor: 'Recuerda los requisitos de estado mecánico y desinfección necesarios antes de tocar al cliente.',
+    explanation: 'Revisar que los filos estén óptimos y la herramienta esterilizada garantiza un corte preciso.'
+},
+        {
+            type: 'text',
+            badge: 'Estructura ungueal',
+            title: 'Partes de la uña',
+            instruction: 'Indica  las partes principales que componen la uña natural indicando sus funciones protectoras.',
+            validation: (raw) => {
+                const v = normalizar(raw);
+                return (
+                    (v.includes('visible') || v.includes('descansa')) &&
+                    (v.includes('lecho') || v.includes('celular'))
+                );
+            },
+            tutor: 'Distingue la queratina visible, el tejido de soporte subyacente y la zona donde se generan las células.',
+            explanation: 'La lámina visible descansa sobre el lecho y crece desde la matriz celular.'
+        },
+        {
+            type: 'checklist',
+            badge: 'Maniobras de acortamiento',
+            title: 'Reglas de corte',
+            instruction: 'Identifica los tres principios técnicos indispensables para realizar el corte de uñas de forma segura.',
+            items: [
+                { text: 'Observar la uña antes de intervenir', correct: true },
+                { text: 'Cortar profundamente los bordes laterales hasta la piel.', correct: false },
+                { text: 'Realizar pequeños cortes progresivos', correct: true },
+                { text: 'Mantener un borde recto sin profundizar laterales.', correct: true }
+            ],
+            tutor: 'Agrupa la inspección previa, el avance paulatino y la conservación de esquinas libres de traumatismo.',
+            explanation: 'La inspección previa, los cortes progresivos y respetar los laterales evitan lesiones dolorosas.'
+        },
+        {
+            type: 'text',
+            badge: 'Regularización de bordes',
+            title: 'Técnica de limado',
+            instruction: 'Describe la función técnica del limado posterior al corte en la terminación del borde libre.',
+            validation: (raw) => {
+                const v = normalizar(raw);
+                let c = 0;
+                if (v.includes('limado') || v.includes('regularizar') || v.includes('bordes')) c++;
+                if (v.includes('enganches') || v.includes('fricci')) c++;
+                return c >= 2;
+            },
+            tutor: 'Analiza cómo la lima suaviza asperezas, redondea bordes filosos y logra la forma definitiva.',
+            explanation: 'El limado posterior logra regularizar bordes y eliminar enganches sin generar fricción excesiva.'
+        },
+        {
+            type: 'traffic',
+            badge: 'Preparación superficial',
+            title: 'Pulido de la lámina',
+            instruction: 'Marca afirmaciones correctas',
+            items: [
+                { text: 'El pulido de la lámina ungueal debe realizarse de forma suave y conservadora sin desgastar la uña.', color: 'green' },
+                { text: 'Pulir en exceso la superficie es necesario para eliminar todas las estrías profundas de la uña.', color: 'red' },
+                { text: 'La lámina debe encontrarse limpia y libre de productos previos antes de iniciar el pulido.', color: 'green' },
+                { text: 'El uso de bloques pulidores abrasivos sustituye la evaluación inicial del grosor de la uña.', color: 'red' }
+            ],
+            tutor: 'Contrasta el acondicionamiento suave de la superficie con el riesgo de adelgazar la uña.',
+            explanation: 'Realizar un pulido conservador acondiciona la superficie preservando el grosor natural.'
+        },
+        {
+            type: 'text',
+            badge: 'Acondicionamiento perioniquio',
+            title: 'Cuidado de cutículas',
+            instruction: 'Sintetiza el objetivo estético del tratamiento de cutículas protegiendo los tejidos circundantes.',
+            validation: (raw) => {
+                const v = normalizar(raw);
+                return (
+                    (v.includes('despejar') || v.includes('cuticula')) &&
+                    (v.includes('protecci') || v.includes('eponiquio') || v.includes('prolijidad'))
+                );
+            },
+            tutor: 'Contempla el desplazamiento suave de tejido adherido sin cortar piel viva ni profundizar la zona proximal.',
+            explanation: 'Despejar la cuticula preserva la protección del eponiquio aportando prolijidad al contorno.'
+        }
+    ],
+
+    // ===================== ANÁLISIS =====================
+    analisis: [
+        {
+            type: 'text',
+            badge: 'Omisiones en evaluación',
+            title: 'Falta de anamnesis',
+            instruction: 'Examina las complicaciones derivadas de omitir la anamnesis inicial en un cliente con patologías previas.',
+            validation: (raw) => {
+                const v = normalizar(raw);
+                return (
+                    (v.includes('anamnesis') || v.includes('expone')) &&
+                    (v.includes('cliente') || v.includes('alergias') || v.includes('riesgo') || v.includes('infeccioso'))
+                );
+            },
+            tutor: 'Considera el peligro de aplicar cosméticos alergénicos o realizar maniobras en pieles frágiles o diabéticas.',
+            explanation: 'Ignorar la anamnesis expone al cliente a alergias graves e incrementa el riesgo infeccioso.'
+        },
+        {
+            type: 'text',
+            badge: 'Fallas higiénicas',
+            title: 'Contaminación cruzada',
+            instruction: 'Evalúa causas y consecuencias de la contaminación cruzada entre clientes durante la atención podoestética.',
+            validation: (raw) => {
+                const v = normalizar(raw);
+                return (
+                    (v.includes('contaminaci') || v.includes('transmite') || v.includes('desinfecci')) &&
+                    v.includes('superficies')
+                );
+            },
+            tutor: 'Reflexiona sobre reutilizar limas descartables o no desinfectar la mesa de trabajo entre turnos.',
+            explanation: 'La contaminación cruzada transmite gérmenes cuando se omite la desinfección de superficies.'
+        },
+        {
+            type: 'checklist',
+            badge: 'Mala praxis instrumental',
+            title: 'Uso de herramientas defectuosas',
+            instruction: 'Escoge las tres consecuencias operativas de trabajar con alicates desafilados o corroídos.',
+            items: [
+                { text: 'Pellizcos y desgarros en el borde libre', correct: true },
+                { text: 'Pérdida de precisión durante el corte', correct: true },
+                { text: 'Desinfección automática por fricción metálica.', correct: false },
+                { text: 'Formación de astillas e irregularidades ungueales.', correct: true }
+            ],
+            tutor: 'Identifica cómo el desgaste del filo deforma la uña y engancha los tejidos suaves adyacentes.',
+            explanation: 'Utilizar instrumental desafilado produce pellizcos, resta precisión y genera astillas en la lámina.'
+        },
+        {
+            type: 'text',
+            badge: 'Vicios ergonómicos',
+            title: 'Posturas forzadas',
+            instruction: 'Explica el impacto acumulativo de encorvar la columna y trabajar sin iluminación adecuada.',
+            validation: (raw) => {
+                const v = normalizar(raw);
+                return (
+                    (v.includes('adoptar') || v.includes('mala')) &&
+                    (v.includes('postura') || v.includes('dolores')) &&
+                    (v.includes('profesional'))
+                );
+            },
+            tutor: 'Analiza la tensión sostenida en zona lumbar y cervical por mala regulación de la silla.',
+            explanation: 'Adoptar una mala postura sobrecarga la columna produciendo dolores crónicos al profesional.'
+        },
+        {
+    type: 'blanks',
+    badge: 'Errores de corte',
+    title: 'Excavado de laterales',
+    instruction: 
+        'Completar la frase.<br><br>' +
+        '1. Recortar profundamente las esquinas de la uña favorece la aparición de ___ y causa una dolorosa ___.<br>',
+    blanks: ['espículas', 'inflamación'],
+    tutor: 'Piensa en los picos de uña que quedan ocultos en el surco y se clavan al crecer.',
+    explanation: 'Cavar los bordes genera espículas punzantes que provocan dolor e inflamación periungueal.'
+},
+        {
+            type: 'text',
+            badge: 'Sobreprocesamiento',
+            title: 'Pulido desmedido',
+            instruction: 'Juzga los daños estructurales producidos al lijar intensamente la lámina para borrar imperfecciones.',
+            validation: (raw) => {
+                const v = normalizar(raw);
+                return (
+                    (v.includes('lijado') || v.includes('desmedido')) &&
+                    (v.includes('debilidad') || v.includes('calor') || v.includes('sensibilidad'))
+                );
+            },
+            tutor: 'Contempla el adelgazamiento de las capas de queratina y la exposición del lecho ungueal.',
+            explanation: 'El lijado desmedido provoca la debilidad de la lámina e incrementa la sensibilidad al calor.'
+        },
+        {
+            type: 'checklist',
+            badge: 'Lesiones de barrera',
+            title: 'Mutilación de cutículas',
+            instruction: 'Señala los tres riesgos inmediatos de cortar tejido vivo alrededor de la matriz ungueal.',
+            items: [
+                { text: 'Entrada de bacterias y hongos a la matriz', correct: true },
+                { text: 'Aceleración del crecimiento sano de la uña.', correct: false },
+                { text: 'Sangrado e inflamación en la zona proximal', correct: true },
+                { text: 'Infección aguda conocida como paroniquia.', correct: true }
+            ],
+            tutor: 'Busca las complicaciones derivadas de destruir la barrera natural del eponiquio.',
+            explanation: 'Eliminar tejido vivo permite la entrada patógena, desencadena sangrado y provoca paroniquia.'
+        },
+        {
+            type: 'text',
+            badge: 'Exfoliación agresiva',
+            title: 'Fricción en piel dañada',
+            instruction: 'Argumenta por qué no debe exfoliarse enérgicamente un talón con grietas o fisuras sangrantes.',
+            validation: (raw) => {
+                const v = normalizar(raw);
+                return (
+                    (v.includes('Aplicar') || v.includes('fricci') || v.includes('fisuras')) &&
+                    (v.includes('abiertas') || v.includes('infecci'))
+                );
+            },
+            tutor: 'Analiza el ardor químico o mecánico y la profundización de las heridas cutáneas.',
+            explanation: 'Aplicar fricción sobre fisuras abiertas agrava las heridas y predispone a la infección.'
+        },
+        {
+            type: 'traffic',
+            badge: 'Químicos dañinos',
+            title: 'Esmaltado sin protección',
+            instruction: 'Marca afirmaciones correctas',
+            items: [
+                { text: 'Aplicar esmalte de color directo sobre la uña sin base protectora puede Pigmentar la lámina.', color: 'green' },
+                { text: 'La base protectora actúa como barrera entre los pigmentos del esmalte y la queratina.', color: 'green' },
+                { text: 'Los esmaltes espesados o vencidos garantizan una adherencia superior y secado rápido.', color: 'red' },
+                { text: 'Agitar vigorosamente el frasco de esmalte elimina las burbujas de aire antes de pintar.', color: 'red' }
+            ],
+            tutor: 'Asocia la función aislante de la base con la prevención de manchas en la queratina.',
+            explanation: 'Utilizar base protectora evita pigmentar la uña y asegura un esmaltado parejo.'
+        },
+        {
+            type: 'text',
+            badge: 'Exceso de atribuciones',
+            title: 'Ignorar límites profesionales',
+            instruction: 'Sopesa los riesgos legales y de salud de intentar tratar una uña con pus o micosis avanzada.',
+            validation: (raw) => {
+                const v = normalizar(raw);
+                return (
+                    (v.includes('intrusismo') || v.includes('infecci')) &&
+                    (v.includes('imperativa') || v.includes('derivaci') || v.includes('salud'))
+                );
+            },
+            tutor: 'Considera las fronteras entre la podoestética y la medicina podológica o dermatológica.',
+            explanation: 'Cometer intrusismo ante una infección compromete la salud, siendo imperativa la derivación médica.'
+        }
+    ],
+    // ===================== ESCENARIOS =====================
+    escenarios: [
+        {
+            type: 'text',
+            badge: 'Piel hiperqueratósica',
+            title: 'Caso de talones agrietados',
+            instruction: 'Plantea el protocolo de ablandamiento y exfoliación suave para una persona con talones secos.',
+            validation: (raw) => {
+                const v = normalizar(raw);
+                return (
+                    v.includes('Aplicar') ||
+                    (
+                        (v.includes('ablandador') || v.includes('exfoliaci') || v.includes('hidrataci')) &&
+                        (v.includes('elasticidad'))
+                    )    
+                );
+            },
+            tutor: 'Considera el uso de queratolíticos suaves, limado de asperezas y sellado con crema nutritiva.',
+            explanation: 'Aplicar ablandador, realizar exfoliación progresiva y aplicar hidratación profunda restaura la elasticidad.'
+        },
+        {
+            type: 'traffic',
+            badge: 'Lámina engrosada',
+            title: 'Manejo de uña gruesa',
+            instruction: 'Marca afirmaciones correctas',
+            items: [
+                { text: 'Ante una uña moderadamente engrosada se debe rebajar el grosor con limado técnico controlado.', color: 'green' },
+                { text: 'Es correcto cortar una uña hiperqueratósica de un solo palancazo fuerte con el alicate.', color: 'red' },
+                { text: 'El rebajado de la lámina debe detenerse si el cliente manifiesta sensibilidad o calor.', color: 'red' },
+                { text: 'Cualquier uña engrosada debe ser fresada quirúrgicamente hasta exponer el lecho vivo.', color: 'green' }
+            ],
+            tutor: 'Observa la técnica de desbastado progresivo frente al peligro de ejercer fuerza desmedida.',
+            explanation: 'El limado controlado disminuye el grosor sin causar calor ni dañar el lecho.'
+        },
+        {
+            type: 'text',
+            badge: 'Detección de alteración',
+            title: 'Sospecha de micosis',
+            instruction: 'Diseña la respuesta profesional ante un cliente que presenta uñas amarillas, frágiles y ahuecadas.',
+            validation: (raw) => {
+                const v = normalizar(raw);
+                return (
+                    (v.includes('observaci') || v.includes('suspender')) &&
+                    (v.includes('esmaltado') || v.includes('derivaci') || v.includes('evaluaci'))
+                );
+            },
+            tutor: 'Detalla el registro visual, la abstención de esmaltado cubriente y el consejo de consulta médica.',
+            explanation: 'Realizar observación atenta exige suspender el esmaltado y sugerir derivación para evaluación.'
+        },
+        {
+            type: 'checklist',
+            badge: 'Molestias laterales',
+            title: 'Borde comprometido',
+            instruction: 'Puntualiza las acciones permitidas en el gabinete si el lateral de la uña genera una presión leve.',
+            items: [
+                { text: 'Realizar incisiones profundas para extirpar la raíz de la uña.', correct: false },
+                { text: 'Limpiar suavemente el surco con la cureta', correct: true },
+                { text: 'Limar la aspereza del borde sin invadir tejidos', correct: true },
+                { text: 'Aplicar antiséptico y verificar ausencia de inflamación', correct: true }
+            ],
+            tutor: 'Busca las maniobras no invasivas de limpieza y desinfección que alivian el roce.',
+            explanation: 'Usar la cureta con suavidad, limar asperezas y desinfectar alivia el roce lateral.'
+        },
+        {
+            type: 'text',
+            badge: 'Paciente de riesgo',
+            title: 'Pedicuría en cliente diabético',
+            instruction: 'Ilustra las precauciones extremas de bioseguridad y maniobras suaves en pies de personas diabéticas.',
+            validation: (raw) => {
+                const v = normalizar(raw);
+                return (
+                    (v.includes('Atender') || v.includes('cliente') || v.includes('requiere')) &&
+                    (v.includes('completamente') || v.includes('fricci') || v.includes('abrasiva'))
+                );
+            },
+            tutor: 'Contempla evitar instrumental cortante en cutículas, verificar temperatura del agua y revisar piel.',
+            explanation: 'Atender a un cliente diabético requiere corte completamente recto y evitar fricción abrasiva.'
+        },
+        {
+            type: 'traffic',
+            badge: 'Cutícula hipertrófica',
+            title: 'Adherencia severa',
+            instruction: 'Marca afirmaciones correctas',
+            items: [
+                { text: 'Para cutículas muy adheridas se debe aplicar un producto ablandador y empujar suavemente.', color: 'green' },
+                { text: 'Desprender la cutícula seca raspando con fuerza con la espátula metálica es la técnica ideal.', color: 'red' },
+                { text: 'Retirar únicamente el tejido muerto desprendido preserva el sellado natural del eponiquio.', color: 'green' },
+                { text: 'Es necesario recortar toda la cutícula hasta que la zona proximal quede al rojo vivo.', color: 'red' }
+            ],
+            tutor: 'Contrasta el ablandamiento químico y empuje dócil con el raspado traumático del eponiquio.',
+            explanation: 'Ablandar el tejido facilita empujar suavemente manteniendo la protección de la matriz.'
+        },
+        {
+            type: 'text',
+            badge: 'Alteración de humedad ',
+            title: 'Pie con hiperhidrosis',
+            instruction: 'Desglosa la estrategia de trabajo en un pie con sudoración excesiva y maceración interdigital.',
+            validation: (raw) => {
+                const v = normalizar(raw);
+                return (
+                    (v.includes('secado') || v.includes('riguroso')) &&
+                    (v.includes('alcohol') || v.includes('cremas') || v.includes('previene') || v.includes('maceraci'))
+                );
+            },
+            tutor: 'Enfatiza el secado minucioso entre dedos, el uso de antisépticos astringentes y evitar cremas oclusivas.',
+            explanation: 'El secado riguroso, aplicar alcohol y evitar cremas en pliegues previene la maceración.'
+        },
+        {
+            type: 'checklist',
+            badge: 'Retiro de productos',
+            title: 'Desgaste de semipermanente',
+            instruction: 'Reúne los pasos correctos para retirar un esmalte previo deteriorado sin dañar la uña natural.',
+            items: [
+                { text: 'Ligar suavemente el brillo o top coat superior', correct: true },
+                { text: 'Aplicar removedor específico con algodón y aluminio', correct: true },
+                { text: 'Desprender suavemente el producto reblandecido con palito.', correct: true },
+                { text: 'Arrancar la capa de gel traccionando con los dientes o pinzas.', correct: false }
+            ],
+            tutor: 'Agrupa la apertura del sellado, la acción del solvente y la remoción sin tracción mecánica.',
+            explanation: 'Limar el top, aplicar removedor y retirar con palito protege las capas ungueales.'
+        },
+        {
+            type: 'text',
+            badge: 'Incidente operativo',
+            title: 'Manejo de sangrado leve',
+            instruction: 'Expón el protocolo inmediato de socorro si se produce un pequeño corte accidental en el pliegue.',
+            validation: (raw) => {
+                const v = normalizar(raw);
+                return (
+                    (v.includes('Ejercer') || v.includes('antis')) &&
+                    (v.includes('controla') || v.includes('sangrado'))
+                );
+            },
+            tutor: 'Considera suspender la maniobra, hacer presión con gasa estéril y aplicar solución antiséptica.',
+            explanation: 'Ejercer presión con gasa, colocar antiséptico y sellar el corte controla el sangrado.'
+        },
+        {
+            type: 'traffic',
+            badge: 'Masaje reparador',
+            title: 'Pies cansados y pesados',
+            instruction: 'Marca afirmaciones correctas',
+            items: [
+                { text: 'Se debe presionar fuertemente sobre várices o venas inflamadas en la zona del tobillo.', color: 'red' },
+                { text: 'El masaje podal debe realizarse con maniobras ascendentes desde los dedos hacia el tobillo.', color: 'green' },
+                { text: 'El masaje estético busca reemplazar el tratamiento médico en casos de edemas crónicos.', color: 'red' },
+                { text: 'El uso de lociones refrescantes con mentol favorece el descanso de pies fatigados.', color: 'green' }
+            ],
+            tutor: 'Evalúa el sentido del drenaje venoso y las precauciones sobre vasos inflamados.',
+            explanation: 'Las maniobras ascendentes con loción mentolada alivian el cansancio respetando la vascularización.'
+        }
+    ],
+
+    // ===================== PRÁCTICA =====================
+    practica: [
+        {
+            type: 'checklist',
+            badge: 'Inicio del servicio',
+            title: 'Higiene y pediluvio',
+            instruction: 'Elige los tres pasos iniciales para preparar los pies del cliente antes de cualquier procedimiento técnico.',
+            items: [
+                { text: 'Sanitizar las manos del profesional y pies del cliente', correct: true },
+                { text: 'Aplicar cera caliente para ablandar durezas profundas.', correct: false },
+                { text: 'Sumergir los pies en agua tibia con jabón antiséptico', correct: true },
+                { text: 'Secar minuciosamente la piel y espacios interdigitales.', correct: true }
+            ],
+            tutor: 'Enfócate en la desinfección de contacto, el baño de relajación y el secado sin humedad residual.',
+            explanation: 'La sanitización, el pediluvio antiséptico y un secado completo inician la atención de forma segura.'
+        },
+        {
+            type: 'text',
+            badge: 'Diagnóstico en camilla',
+            title: 'Llenado de ficha clínica',
+            instruction: 'Instruye paso a paso el volcado de datos de inspección visual en la ficha profesional del cliente.',
+            validation: (raw) => {
+                const v = normalizar(raw);
+                return (
+                    (v.includes('inspecci') || v.includes('hallazgos') || v.includes('seguimiento') || v.includes('tecnico'))
+                );
+            },
+            tutor: 'Detalla el registro de forma ungueal, estado de piel, presencia de callosidades y firma de conformidad.',
+            explanation: 'Registrar la inspección visual y anotar hallazgos en la ficha asegura el seguimiento tecnico.'
+        },
+        {
+         type: 'blanks',
+         badge: 'Ejecución de corte',
+         title: 'Técnica de alicate',
+         instruction: 
+        'Completá las frases.<br><br>' +
+        '1. Para cortar la uña se toma el alicate firmemente, se realizan cortes ___ y se mantiene una forma ___ sin redondear bordes.<br>',
+         blanks: ['progresivos', 'recta'],
+         tutor: 'Recuerda el avance a pequeños pellizcos controlados y la línea transversal cuadrada.',
+         explanation: 'Efectuar cortes progresivos respetando la línea recta previene incrustaciones en los laterales.'
+},
+        {
+            type: 'traffic',
+            badge: 'Perfeccionamiento de bordes',
+            title: 'Limado técnico',
+            instruction: 'Marca afirmaciones correctas',
+            items: [
+                { text: 'Limar ida y vuelta con serrucho fortalece la unión de las capas de queratina.', color: 'red' },
+                { text: 'Utilizar limas de grano metálico grueso es ideal para pulir la lámina natural fina. ', color: 'red' },
+                { text: 'La lima debe desplazarse en un solo sentido para evitar descascarar las capas de la uña.', color: 'green' },
+                { text: 'Es necesario suavizar las aristas filosas de las esquinas sin eliminar la forma recta general.', color: 'green' }
+            ],
+            tutor: 'Analiza el movimiento unidireccional de la lima para conservar la cohesión de la queratina.',
+            explanation: 'Limar en un sentido suaviza las esquinas y protege las capas de queratina.'
+        },
+        {
+            type: 'text',
+            badge: 'Preparación de lámina',
+            title: 'Acondicionamiento con buffer',
+            instruction: 'Prescribe los movimientos para pasar el bloque pulidor suave sobre la superficie de las uñas.',
+            validation: (raw) => {
+                const v = normalizar(raw);
+                return (
+                    (v.includes('buffer') || v.includes('suavidad')) &&
+                    (v.includes('queratina') || v.includes('recibir') || v.includes('base') || v.includes('desgaste'))
+                );
+            },
+            tutor: 'Pauta pasadas mansas y paralelas sin detenerse en un solo punto para eliminar porosidad y restos.',
+            explanation: 'Deslizar el buffer con suavidad prepara la queratina para recibir la base sin desgaste.'
+        },
+        {
+            type: 'checklist',
+            badge: 'Cuidado periungueal',
+            title: 'Desplazamiento de cutícula',
+            instruction: 'Determina la secuencia correcta para tratar las cutículas con empujador y antiséptico.',
+            items: [
+                { text: 'Limpiar el exceso de producto con torunda humedecida, Cortar profundamente la piel del eponiquio con tijera', correct: false },
+                { text: 'Aplicar ablandador de cutícula y dejar actuar un minuto', correct: true },
+                { text: 'Empujar suavemente el tejido hacia la base con palito de naranjo', correct: true },
+                { text: 'Limpiar el exceso de producto con torunda humedecida.', correct: true }
+            ],
+            tutor: 'Agrupa el ablandamiento previo, el despliegue muelle hacia atrás y la limpieza de residuos.',
+            explanation: 'Colocar ablandador, desplazar con palito y retirar residuos deja el contorno limpio.'
+        },
+        {
+            type: 'text',
+            badge: 'Renovación cutánea',
+            title: 'Exfoliación podal',
+            instruction: 'Guía la aplicación de la crema exfoliante mediante masajes circulares en planta y talón.',
+            validation: (raw) => {
+                const v = normalizar(raw);
+                return (
+                    (v.includes('Esparcir') || v.includes('exfoliante') || v.includes('masajes')) &&
+                    (v.includes('talones') || v.includes('enjuague'))
+                );
+            },
+            tutor: 'Ordena la distribución del producto, la fricción moderada en zonas duras y el aclarado con agua.',
+            explanation: 'Esparcir el exfoliante, aplicar masajes en talones y realizar enjuague total retira células muertas.'
+        },
+        {
+            type: 'traffic',
+            badge: 'Nutrición de la piel',
+            title: 'Aplicación de crema hidratante',
+            instruction: 'Marca afirmaciones correctas',
+            items: [
+                { text: 'ILa crema hidratante debe masajearse firmemente en planta, empeine y talones hasta su absorción.', color: 'green' },
+                { text: 'Es recomendable dejar abundante crema acumulada entre los dedos para mantener la zona húmeda.', color: 'red' },
+                { text: 'La hidratación profunda sustituye por completo el uso de calzado cómodo y ventilado.', color: 'red' },
+                { text: 'Retirar el exceso de oleosidad de las uñas con alcohol es indispensable antes de esmaltar.', color: 'green' }
+            ],
+            tutor: 'Considera la importancia de desengrasar la lámina para que el esmalte se fije correctamente.',
+            explanation: 'Masajear la crema en el pie y limpiar la oleosidad de la uña asegura el esmaltado.'
+        },
+        {
+            type: 'text',
+            badge: 'Acabado cosmético',
+            title: 'Esmaltado tradicional',
+            instruction: 'Pauta el procedimiento de tres capas (base, color y top coat) para un acabado profesional y duradero.',
+            validation: (raw) => {
+                const v = normalizar(raw);
+                return (
+                    (v.includes('Aplicar') || v.includes('protectora') || v.includes('color') || v.includes('sellador'))&&
+                    (v.includes('garantiza') || v.includes('brillo'))
+                );
+            },
+            tutor: 'Ordena la pincelada central y laterales, el tiempo de secado y el sellado del borde libre.',
+            explanation: 'Aplicar base protectora, dos capas de color y capa de sellador garantiza brillo duradero.'
+        },
+        {
+            type: 'checklist',
+            badge: 'Cierre del servicio',
+            title: 'Inspección y recomendaciones',
+            instruction: 'Compila las tareas finales antes de despedir al cliente de la sesión de pedicuría estética.',
+            items: [
+                { text: 'Aplicar quitapesares con ácido puro directamente sobre el empeine.', correct: false },
+                { text: 'Comprobar la prolijidad del esmaltado y secado al tacto', correct: true },
+                { text: 'Brindar pautas de hidratación y calzado cómodo para el hogar', correct: true },
+                { text: 'Agendar el próximo control o mantenimiento a las tres semanas.', correct: true }
+            ],
+            tutor: 'Busca el control de calidad visual, los consejos domiciliarios y la programación de la cita futura.',
+            explanation: 'Revisar el esmaltado, dar pautas para el hogar y agendar el mantenimiento completa el servicio.'
+        }
+    ]
+};
+
+        let currentModule = '';
+        let currentIndex = 0;
+        let attemptCount = 0;
+        let lastAudioModule = null;
+
+        // ===== MAPEO DE MÓDULOS A AUDIOS =====
+        const moduloAudioMap = {
+            'sintesis': 'mensaje1',
+            'analisis': 'mensaje2',
+            'escenarios': 'mensaje3',
+            'practica': 'mensaje4'
+        };
+
+        function startModule(id) {
+            playSound('click');
+            currentModule = id;
+            currentIndex = 0;
+            attemptCount = 0;
+            lastAudioModule = id;
+
+            // Reproducir el audio del módulo correspondiente
+            const audioKey = moduloAudioMap[id];
+            if (audioKey) {
+                playAudio(audioKey);
+            }
+
+            document.getElementById('selectionScreen').style.display = 'none';
+            document.getElementById('activityScreen').classList.add('active');
+
+            setTimeout(loadActivity, 300);
+        }
+
+        function loadActivity() {
+            attemptCount = 0;
+
+            if (currentIndex >= modules[currentModule].length) {
+                // Reproducir "lolograste.mp3" al terminar TODAS las preguntas
+                playAudio('lolograste');
+                playSound('success');
+                alert('¡Excelente! Completaste este bloque.');
+                setTimeout(() => {
+                    location.reload();
+                }, 2000);
+                return;
+            }
+
+            const data = modules[currentModule][currentIndex];
+            const container = document.getElementById('activityContainer');
+
+            const msg = `Pregunta ${currentIndex + 1} de ${modules[currentModule].length}: ${data.tutor}`;
+            document.getElementById('tutorMessage').innerText = msg;
+
+            let html = `<span class="act-badge">${data.badge}</span>
+                        <h2 class="act-title">${data.title}</h2>
+                        <p class="act-instruction">${data.instruction}</p>`;
+
+            if (data.type === 'text') {
+                html += `<textarea id="txtInput" class="student-input" placeholder="Escribe tu respuesta con tus palabras..."></textarea>`;
+            } else if (data.type === 'blanks') {
+                html += `<div style="font-size:1.2rem; line-height:2.5;">`;
+                data.blanks.forEach((b, i) => {
+                    html += `${i + 1}. <input type="text" class="fill-input" data-ans="${b}"> <br>`;
+                });
+                html += `</div>`;
+            } else if (data.type === 'traffic') {
+                data.items.forEach((item, i) => {
+                    html += `<div class="traffic-row" id="row-${i}">
+                                <span>${item.text}</span>
+                                <div style="display:flex; gap:10px;">
+                                    <div class="traffic-btn bg-green" onclick="selTraffic(${i}, 'green')"></div>
+                                    <div class="traffic-btn bg-yellow" onclick="selTraffic(${i}, 'yellow')"></div>
+                                    <div class="traffic-btn bg-red" onclick="selTraffic(${i}, 'red')"></div>
+                                </div>
+                            </div>`;
+                });
+            } else if (data.type === 'checklist') {
+                data.items.forEach((item) => {
+                    html += `<div class="checklist-item" onclick="toggleCheck(this)" data-correct="${item.correct}">
+                                <div class="check-box"></div>
+                                <span>${item.text}</span>
+                            </div>`;
+                });
+            }
+
+            html += `<div id="feedback" class="feedback-area"></div>
+                     <button id="btnCheck" class="btn-action" onclick="validate()">Verificar respuesta</button>
+                     <button class="btn-action btn-back" onclick="location.reload()">Salir al menú</button>`;
+
+            container.innerHTML = html;
+            wireUiSounds();
+        }
+
+        let trafficAns = {};
+
+        function selTraffic(idx, color) {
+            trafficAns[idx] = color;
+            const row = document.getElementById(`row-${idx}`);
+            row.querySelectorAll('.traffic-btn').forEach(b => b.classList.remove('active'));
+            row.querySelector(`.bg-${color}`).classList.add('active');
+            playSound('click');
+        }
+
+        function toggleCheck(el) {
+            el.classList.toggle('selected');
+            el.querySelector('.check-box').innerText = el.classList.contains('selected') ? '✓' : '';
+
+            if (el.classList.contains('selected')) {
+                el.style.borderColor = 'var(--ficde-naranja)';
+                el.querySelector('.check-box').style.background = 'var(--ficde-naranja)';
+                el.querySelector('.check-box').style.borderColor = 'var(--ficde-naranja)';
+                el.querySelector('.check-box').style.color = 'white';
+            } else {
+                el.style.borderColor = 'transparent';
+                el.querySelector('.check-box').style.background = 'transparent';
+                el.querySelector('.check-box').style.borderColor = '#ccc';
+            }
+
+            playSound('click');
+        }
+
+        function validate() {
+            const data = modules[currentModule][currentIndex];
+            const feedback = document.getElementById('feedback');
+            let isCorrect = false;
+
+            if (data.type === 'text') {
+                const val = document.getElementById('txtInput').value;
+                isCorrect = data.validation(val);
+            } else if (data.type === 'blanks') {
+                const inputs = document.querySelectorAll('.fill-input');
+                let hits = 0;
+                inputs.forEach(inp => {
+                    const v = normalizar(inp.value);
+                    const ans = normalizar(inp.dataset.ans);
+                    if (v.length > 1 && ans.startsWith(v.slice(0, Math.max(2, Math.min(v.length, ans.length))))) hits++;
+                });
+                isCorrect = (hits === data.blanks.length);
+            } else if (data.type === 'traffic') {
+                let hits = 0;
+                data.items.forEach((item, i) => { if (trafficAns[i] === item.color) hits++; });
+                isCorrect = (hits === data.items.length);
+            } else if (data.type === 'checklist') {
+                let correct = true;
+                document.querySelectorAll('.checklist-item').forEach(item => {
+                    const sel = item.classList.contains('selected');
+                    const should = item.dataset.correct === 'true';
+                    if (sel !== should) correct = false;
+                });
+                isCorrect = correct;
+            }
+
+            feedback.style.display = 'block';
+
+            if (isCorrect) {
+                playAudio('correcto');
+                playSound('success');
+                feedback.className = 'feedback-area feedback-success';
+                feedback.innerHTML = `<strong>¡Muy bien!</strong><br>${data.explanation}`;
+                document.getElementById('btnCheck').innerText = 'Siguiente pregunta →';
+                document.getElementById('btnCheck').onclick = () => { currentIndex++; loadActivity(); };
+            } else {
+                attemptCount++;
+
+                if (attemptCount < 2) {
+                    playAudio('error1');
+                    feedback.className = 'feedback-area feedback-retry';
+                    feedback.innerHTML = `<strong>Buen intento.</strong> Revisá tu respuesta. Pista: ${data.tutor}`;
+                } else {
+                    playAudio('error2');
+                    feedback.className = 'feedback-area feedback-fail';
+                    feedback.innerHTML = `<strong>No pasa nada, aprendamos juntos:</strong><br>${data.explanation}`;
+                    document.getElementById('btnCheck').innerText = 'Entendido, continuar →';
+                    document.getElementById('btnCheck').onclick = () => { currentIndex++; loadActivity(); };
+                }
+            }
+        }
+
+        function replayTutorMessage() {
+            // Replay del último audio de módulo reproducido
+            if (lastAudioModule) {
+                const audioKey = moduloAudioMap[lastAudioModule];
+                if (audioKey) {
+                    playAudio(audioKey);
+                }
+            }
+        }
+    </script>
+</body>
+</html>
